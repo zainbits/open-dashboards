@@ -10,7 +10,7 @@ type QueryList = QueryModel[];
 
 class QueryStore {
   queryList: QueryList = [
-    { qid: this.formatDateTime(), method: "GET", path: "_cat/indices" },
+    { qid: this.formatDateTime(), method: "GET", path: "_cat/indices?format=json" },
   ];
 
   constructor() {
