@@ -6,7 +6,6 @@ import {
   Select,
   // VStack,
   Code,
-  Text,
   Flex,
   // useMediaQuery,
 } from "@chakra-ui/react";

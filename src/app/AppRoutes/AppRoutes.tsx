@@ -2,7 +2,7 @@ import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 
 import { Home, NotFound } from "../Pages";
 import { AppCanvas } from "./AppCanvas";
-import { Experiments } from "../Components";
+// import { Experiments } from "../Components";
 
 export const AppRoutes = () => {
   return (
@@ -16,7 +16,7 @@ export const AppRoutes = () => {
         }
       >
         <Route index element={<Home />} />
-        <Route path="alpha" element={<Experiments />} />
+        {/* <Route path="alpha" element={<Experiments />} /> */}
         <Route path="404" element={<NotFound />} />
       </Route>
       <Route path="*" element={<Navigate to="/404" />} />
