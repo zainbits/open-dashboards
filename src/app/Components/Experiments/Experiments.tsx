@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef, useEffect, ReactNode } from "react";
 import { Box, Flex, useTheme } from "@chakra-ui/react";
 
 // A custom hook to get the mouse position relative to an element
@@ -15,7 +15,7 @@ const useMousePosition = (element: HTMLElement | null) => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (element) {
       element.addEventListener("mousemove", updateMousePosition);
     }
@@ -42,7 +42,7 @@ const useElementSize = (element: HTMLElement | null) => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     updateSize();
     window.addEventListener("resize", updateSize);
     return () => {
@@ -54,7 +54,7 @@ const useElementSize = (element: HTMLElement | null) => {
 };
 
 interface ResizableSplitPaneProps {
-  children: React.ReactNode[]; // The two sections to be rendered
+  children: ReactNode[]; // The two sections to be rendered
 }
 
 export const Experiments = ({ children }: ResizableSplitPaneProps) => {
@@ -66,17 +66,23 @@ export const Experiments = ({ children }: ResizableSplitPaneProps) => {
   const mousePosition = useMousePosition(containerRef.current);
   const containerSize = useElementSize(containerRef.current);
   const initialRatio: number =
-    parseFloat(localStorage.getItem("split-ratio") || "5.0") || 5.0;
+    parseFloat(localStorage.getItem("split-ratio") || "0.5") || 0.5;
   const [newRatio, setNewRatio] = useState(initialRatio);
-  const direction =
-    containerSize.width > containerSize.height ? "row" : "column";
+  const [direction, setDirection] = useState<"row" | "column">("row");
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (containerSize.width > containerSize.height && resizing) {
       setNewRatio(mousePosition.x / containerSize.width);
       localStorage.setItem("split-ratio", newRatio.toString());
+    } else if (containerSize.width < containerSize.height && resizing) {
+      setNewRatio(mousePosition.y / containerSize.height);
+      localStorage.setItem("split-ratio", newRatio.toString());
     }
   }, [mousePosition]);
+
+  useEffect(() => {
+    setDirection(containerSize.width > containerSize.height ? "row" : "column");
+  }, [containerSize]);
 
   const cursor = direction === "row" ? "col-resize" : "row-resize";
   const ratio = Math.max(0.2, Math.min(0.8, newRatio));
@@ -89,7 +95,7 @@ export const Experiments = ({ children }: ResizableSplitPaneProps) => {
       id="Experiments-Flex"
       onMouseUp={() => setResizing(false)}
     >
-      <Box flex={ratio} mr={4}>
+      <Box flex={ratio} mr={4} overflow="auto">
         {children && (children[0] ?? "default value")}
       </Box>
       <Flex
