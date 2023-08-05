@@ -10,7 +10,11 @@ type QueryList = QueryModel[];
 
 class QueryStore {
   queryList: QueryList = [
-    { qid: this.formatDateTime(), method: "GET", path: "_cat/indices?format=json" },
+    {
+      qid: this.formatDateTime(),
+      method: "GET",
+      path: "_cat/indices?format=json",
+    },
   ];
 
   constructor() {
@@ -29,12 +33,14 @@ class QueryStore {
     this.queryList.push({
       qid: this.formatDateTime(),
       method: "GET",
-      path: "_cat/indices",
+      path: "_cat/indices?format=json",
     });
   }
 
   deleteQuery(query: QueryModel) {
-    console.log("TODO: Implement this", query);
+    this.queryList = this.queryList.filter(
+      (_query) => _query.qid !== query.qid
+    );
   }
 }
 

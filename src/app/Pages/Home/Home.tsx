@@ -16,17 +16,20 @@ import {
   AiOutlinePlus,
 } from "react-icons/ai";
 import { observer } from "mobx-react";
+import { Dispatch, SetStateAction, useState } from "react";
+import { Grid } from "react-loader-spinner";
 
 import { Input, Experiments } from "../../Components";
 import { QueryModel, queryStore } from "../../xstore";
-import { Dispatch, SetStateAction, useState } from "react";
 
 const QueryForm = ({
   query,
   setRightPaneData,
+  setLoading,
 }: {
   query: QueryModel;
   setRightPaneData: Dispatch<SetStateAction<any>>;
+  setLoading: Dispatch<SetStateAction<boolean>>;
 }) => {
   const {
     register,
@@ -34,8 +37,8 @@ const QueryForm = ({
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (fieldValues: FieldValues) => {
-    console.log(fieldValues);
+  const onSubmit = async (fieldValues: FieldValues) => {
+    setLoading(true);
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     const raw = JSON.stringify({
@@ -50,7 +53,8 @@ const QueryForm = ({
     fetch("http://127.0.0.1:8000/opensearch-eu", requestOptions)
       .then((response) => response.json())
       .then((result) => setRightPaneData(result))
-      .catch((error) => setRightPaneData({data: error.toString()}));
+      .catch((error) => setRightPaneData({ data: error.toString() }));
+    setLoading(false);
   };
 
   return (
@@ -75,10 +79,11 @@ const QueryForm = ({
           <Flex flexDirection="row" mr={6}>
             <IconButton
               variant="ghost"
+              onClick={() => queryStore.deleteQuery(query)}
               size="xs"
               icon={<AiOutlineDelete />}
               aria-label="run"
-              _hover={{ bg: "red.400" }}
+              _hover={{ bg: "red.400", color: "white" }}
             />
             <IconButton
               variant="ghost"
@@ -103,6 +108,7 @@ const QueryForm = ({
 const _Home = () => {
   // const [isLargerThan768] = useMediaQuery("(min-width: 1180px)");
   const [rightPaneDate, setRightPaneData] = useState<any>({});
+  const [loading, setLoading] = useState<boolean>(false);
   const replacer = (_: string, value: any) => {
     if (value === null) {
       return undefined;
@@ -117,6 +123,7 @@ const _Home = () => {
             <QueryForm
               query={query}
               setRightPaneData={setRightPaneData}
+              setLoading={setLoading}
               key={key}
             />
           );
@@ -130,13 +137,34 @@ const _Home = () => {
           aria-label="run"
         />
       </Box>
-      <Box id="rightHomePane" p={1}>
-        <Box>
-          <Code fontSize="xs" whiteSpace="pre-wrap">
-            {JSON.stringify(rightPaneDate?.data, replacer, 2)}
-          </Code>
-        </Box>
-      </Box>
+      <Flex
+        id="rightHomePane"
+        p={1}
+        h="full"
+        w="full"
+        alignItems={loading ? "center" : "start"}
+        justifyContent={loading ? "center" : "start"}
+      >
+        {loading && (
+          <Grid
+            height="80"
+            width="80"
+            color="#4299e1"
+            ariaLabel="grid-loading"
+            radius="12.5"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+          />
+        )}
+        {!loading && (
+          <Box>
+            <Code fontSize="xs" whiteSpace="pre-wrap">
+              {JSON.stringify(rightPaneDate?.data, replacer, 2)}
+            </Code>
+          </Box>
+        )}
+      </Flex>
     </Experiments>
   );
 };

@@ -1,6 +1,7 @@
-import { Button, Flex, Text, VStack } from "@chakra-ui/react";
+import { Button, Flex, IconButton, Text, VStack } from "@chakra-ui/react";
 import { ReactNode, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { BsChevronDoubleRight, BsChevronDoubleLeft } from "react-icons/bs";
 
 const SidebarButton = ({
   to,
@@ -31,7 +32,6 @@ export const Sidebar = () => {
   return (
     <Flex
       bg="blue.400"
-      m="2px"
       direction="column"
       transition="width 0.1s ease-in-out"
       w={sidebarExpand ? "350px" : "150px"}
@@ -49,18 +49,22 @@ export const Sidebar = () => {
         {/* <Button borderRadius={0} w="full">
           Footer
         </Button> */}
-        <Button
-        bg="gray.200"
+        <IconButton
           borderRadius={0}
+          color="white"
+          _hover={{color: "unset", bg: "gray.100"}}
           alignSelf="flex-end"
-          mr={-4}
+          // mr={-2}
+          variant="ghost"
           mb={4}
           w={6}
           h={6}
+          icon={
+            sidebarExpand ? <BsChevronDoubleLeft /> : <BsChevronDoubleRight />
+          }
           onClick={() => setSidebarExpand(!sidebarExpand)}
-        >
-          {sidebarExpand ? "<" : ">"}
-        </Button>
+          aria-label="sidebar-expand-toggle"
+        />
       </VStack>
     </Flex>
   );
