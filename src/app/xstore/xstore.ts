@@ -8,8 +8,7 @@ export interface QueryItem {
 
 class QueryStore {
   objectList: QueryItem[] = [
-    { qid: 1, method: 'put', path: '' },
-    { qid: 2, method: '', path: '' },
+    { qid: 1, method: 'get', path: '_cat/indices?format=json' },
   ];
 
   constructor() {

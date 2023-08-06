@@ -34,6 +34,7 @@ const QueryForm: React.FC<QueryFormProps> = ({ obj, setQueryResponse }) => {
       headers: myHeaders,
       body: raw,
     };
+    console.log("submitting", raw)
     fetch("http://127.0.0.1:8000/opensearch-eu", requestOptions)
       .then((response) => response.json())
       .then((result) => setQueryResponse(result))
