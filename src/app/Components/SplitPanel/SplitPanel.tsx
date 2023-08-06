@@ -57,7 +57,7 @@ interface ResizableSplitPaneProps {
   children: ReactNode[]; // The two sections to be rendered
 }
 
-export const Experiments = ({ children }: ResizableSplitPaneProps) => {
+export const SplitPanel = ({ children }: ResizableSplitPaneProps) => {
   const theme = useTheme();
 
   const containerRef = useRef<HTMLDivElement>(null);

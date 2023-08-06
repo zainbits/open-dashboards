@@ -1,47 +1,39 @@
-import { makeAutoObservable } from "mobx";
+import { makeObservable, observable, action } from 'mobx';
 
-export interface QueryModel {
-  qid: string;
+export interface QueryItem {
+  qid: number;
   method: string;
   path: string;
 }
 
-type QueryList = QueryModel[];
-
 class QueryStore {
-  queryList: QueryList = [
-    {
-      qid: this.formatDateTime(),
-      method: "GET",
-      path: "_cat/indices?format=json",
-    },
+  objectList: QueryItem[] = [
+    { qid: 1, method: 'put', path: '' },
+    { qid: 2, method: '', path: '' },
   ];
 
   constructor() {
-    makeAutoObservable(this);
-  }
-
-  formatDateTime() {
-    const formattedDateTime: string = new Date()
-      .toISOString()
-      .replace(/[-:.T]/g, "")
-      .slice(0, 14);
-    return formattedDateTime;
-  }
-
-  addQuery() {
-    this.queryList.push({
-      qid: this.formatDateTime(),
-      method: "GET",
-      path: "_cat/indices?format=json",
+    makeObservable(this, {
+      objectList: observable,
+      addQuery: action,
+      deleteQuery: action,
+      handleChange: action,
     });
   }
 
-  deleteQuery(query: QueryModel) {
-    this.queryList = this.queryList.filter(
-      (_query) => _query.qid !== query.qid
+  addQuery = () => {
+    this.objectList.push({ qid: Date.now(), method: '', path: '' });
+  };
+
+  deleteQuery = (qid: number) => {
+    this.objectList = this.objectList.filter((obj) => obj.qid !== qid);
+  };
+
+  handleChange = (qid: number, method: string, path: string) => {
+    this.objectList = this.objectList.map((obj) =>
+      obj.qid === qid ? { ...obj, method, path } : obj
     );
-  }
+  };
 }
 
 export const queryStore = new QueryStore();

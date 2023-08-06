@@ -1,2 +1,2 @@
 export * from './Input'
-export * from './Experiments'
+export * from './SplitPanel'
